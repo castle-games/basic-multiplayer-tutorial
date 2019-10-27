@@ -12,3 +12,10 @@ end
 function server.disconnect(clientId)
     print('server: client ' .. clientId .. ' disconnected')
 end
+
+function server.receive(clientId, message, ...)
+    if message == 'pressedKey' then
+        local key = ...
+        server.send('all', 'otherClientPressedKey', clientId, key)
+    end
+end
