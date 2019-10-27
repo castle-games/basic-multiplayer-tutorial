@@ -31,3 +31,12 @@ function server.receive(clientId, message, ...)
         server.send('all', 'otherClientPressedKey', clientId, key)
     end
 end
+
+function server.update(dt)
+    for clientId, player in pairs(share.players) do
+        local home = homes[clientId]
+        if home.x and home.y then
+            player.x, player.y = home.x, home.y
+        end
+    end
+end
