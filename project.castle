@@ -1,0 +1,7 @@
+main: client.lua
+multiplayer:
+    enabled: true
+    serverMain: server.lua
+title: Basic Multiplayer Tutorial
+owner: nikki
+description: Learning to make a multiplayer game on Castle
