@@ -37,8 +37,13 @@ end
 function server.update(dt)
     for clientId, player in pairs(share.players) do
         local home = homes[clientId]
+
         if home.x and home.y then
             player.x, player.y = home.x, home.y
+        end
+
+        if home.me and not player.me then
+            player.me = home.me
         end
     end
 end

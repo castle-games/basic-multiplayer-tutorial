@@ -13,6 +13,8 @@ function client.connect()
 
     local player = share.players[client.id]
     home.x, home.y = player.x, player.y
+
+    home.me = castle.user.getMe()
 end
 
 function client.disconnect()
@@ -28,6 +30,8 @@ function client.receive(message, ...)
     end
 end
 
+local playerImages = {}
+
 function client.draw()
     if client.connected then
         for clientId, player in pairs(share.players) do
@@ -35,7 +39,31 @@ function client.draw()
             if clientId == client.id then
                 x, y = home.x, home.y
             end
-            love.graphics.rectangle('fill', x - 20, y - 20, 40, 40)
+
+            if not playerImages[clientId] then
+                playerImages[clientId] = {}
+            end
+
+            if playerImages[clientId].image then
+                -- Image is loaded, draw it
+                local image = playerImages[clientId].image
+                love.graphics.draw(image, x - 20, y - 20, 0,
+                    40 / image:getWidth(), 40 / image:getHeight())
+            else
+                -- Image isn't loaded, draw a rectangle for now
+                love.graphics.rectangle('fill', x - 20, y - 20, 40, 40)
+
+                -- If a photo is available and we haven't fetched it yet,
+                -- start fetching it and then save the image
+                if player.me and player.me.photoUrl
+                    and not playerImages[clientId].fetched then
+                    playerImages[clientId].fetched = true
+                    network.async(function()
+                        local image = love.graphics.newImage(player.me.photoUrl)
+                        playerImages[clientId].image = image
+                    end)
+                end
+            end
         end
     else
         love.graphics.print('connecting...', 20, 20)
