@@ -23,6 +23,8 @@ end
 
 function server.disconnect(clientId)
     print('server: client ' .. clientId .. ' disconnected')
+
+    share.players[clientId] = nil
 end
 
 function server.receive(clientId, message, ...)
